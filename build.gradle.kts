@@ -10,9 +10,15 @@ repositories {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation("org.hibernate.orm:hibernate-core:7.1.4.Final")
+    implementation("org.slf4j:slf4j-api:2.0.17")
+
+    compileOnly("org.projectlombok:lombok:1.18.42")
+
+    runtimeOnly("org.postgresql:postgresql:42.7.8")
+    runtimeOnly("ch.qos.logback:logback-classic:1.5.20")
+
+    annotationProcessor("org.projectlombok:lombok:1.18.42")
 }
 
 tasks.test {

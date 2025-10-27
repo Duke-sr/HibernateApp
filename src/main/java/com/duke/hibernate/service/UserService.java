@@ -1,24 +1,13 @@
 package com.duke.hibernate.service;
 
-import com.duke.hibernate.entity.User;
-import com.duke.hibernate.dao.UserDaoImpl;
+import com.duke.hibernate.entity.UserEntity;
 
-public class UserService {
-    private final UserDaoImpl usersDao = new UserDaoImpl();
+public interface UserService {
+    void createUser(UserEntity userEntity);
 
-    public void createUser(User user) {
-        usersDao.create(user);
-    }
+    UserEntity getUser(Long id);
 
-    public User getUser(Long id) {
-        return usersDao.get(id);
-    }
+    void updateUser(UserEntity userEntity);
 
-    public void updateUser(User user) {
-        usersDao.update(user);
-    }
-
-    public void deleteUser(Long id) {
-        usersDao.delete(id);
-    }
+    void deleteUser(Long id);
 }

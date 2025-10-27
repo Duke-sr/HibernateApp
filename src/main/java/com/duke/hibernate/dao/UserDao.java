@@ -1,13 +1,29 @@
 package com.duke.hibernate.dao;
 
-import com.duke.hibernate.entity.User;
+import com.duke.hibernate.entity.UserEntity;
+
+/**
+ * Интерфейс определят операции CRUD.
+ */
 
 public interface UserDao {
-    void create(User user);
+    /**
+     * Добавление данных для нового пользователя в БД.
+     */
+    void create(UserEntity userEntity);
 
-    User get(Long id);
+    /**
+     * Получение данных пользователя по ID.
+     */
+    UserEntity get(Long id);
 
-    void update(User user);
+    /**
+     * Обновление данных существующего пользователя.
+     */
+    void update(UserEntity userEntity);
 
-    void delete(Long user);
+    /**
+     * Удаление данных пользователя по ID.
+     */
+    void delete(Long id);
 }

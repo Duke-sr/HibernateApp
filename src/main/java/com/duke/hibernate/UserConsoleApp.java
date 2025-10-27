@@ -1,7 +1,7 @@
 package com.duke.hibernate;
 
-import com.duke.hibernate.entity.User;
-import com.duke.hibernate.service.UserService;
+import com.duke.hibernate.entity.UserEntity;
+import com.duke.hibernate.service.UserServiceImpl;
 import com.duke.hibernate.util.HibernateSessionFactoryUtil;
 
 import java.util.Scanner;
@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 
 public class UserConsoleApp {
     private static final Scanner scanner = new Scanner(System.in);
-    private static final UserService userService = new UserService();
+    private static final UserServiceImpl USER_SERVICE_IMPL = new UserServiceImpl();
 
-    static void main(String[] args) {
+    static void main() {
         System.out.println("Консольное приложение");
 
         while (true) {
@@ -44,15 +44,15 @@ public class UserConsoleApp {
     }
 
     private static void createUser() {
-        User user = readUserInput(null);
-        userService.createUser(user);
-        System.out.println("Пользователь добавлен: " + user);
+        UserEntity userEntity = readUserInput(null);
+        USER_SERVICE_IMPL.createUser(userEntity);
+        System.out.println("Пользователь добавлен: " + userEntity);
     }
 
     private static void getUsers() {
         System.out.print("Введите ID пользователя для получения: ");
         Long id = Long.parseLong(scanner.nextLine());
-        User existing = userService.getUser(id);
+        UserEntity existing = USER_SERVICE_IMPL.getUser(id);
         if (existing == null) {
             System.out.println("Пользователь с ID " + id + " не найден.");
         } else {
@@ -67,39 +67,39 @@ public class UserConsoleApp {
     private static void updateUser() {
         System.out.print("Введите ID пользователя для обновления: ");
         Long id = Long.parseLong(scanner.nextLine());
-        User existing = userService.getUser(id);
+        UserEntity existing = USER_SERVICE_IMPL.getUser(id);
         if (existing == null) {
             System.out.println("Пользователь с ID " + id + " не найден.");
             return;
         }
 
-        User updated = readUserInput(existing);
-        userService.updateUser(updated);
+        UserEntity updated = readUserInput(existing);
+        USER_SERVICE_IMPL.updateUser(updated);
         System.out.println("Пользователь обновлен: " + updated);
     }
 
     private static void deleteUser() {
         System.out.print("Введите ID пользователя для удаления: ");
         Long id = Long.parseLong(scanner.nextLine());
-        userService.deleteUser(id);
+        USER_SERVICE_IMPL.deleteUser(id);
         System.out.println("Пользователь c ID " + id + " удалён");
     }
 
-    private static User readUserInput(User user) {
-        if (user == null) {
-            user = new User();
+    private static UserEntity readUserInput(UserEntity userEntity) {
+        if (userEntity == null) {
+            userEntity = new UserEntity();
         }
 
         System.out.print("Введите имя: ");
-        user.setName(scanner.nextLine());
+        userEntity.setName(scanner.nextLine());
 
         System.out.print("Введите email: ");
-        user.setEmail(scanner.nextLine());
+        userEntity.setEmail(scanner.nextLine());
 
         System.out.print("Введите возраст: ");
-        user.setAge(Long.parseLong(scanner.nextLine()));
+        userEntity.setAge(Long.parseLong(scanner.nextLine()));
 
-        user.setCreatedAt(LocalDateTime.now().toInstant(ZoneOffset.UTC));
-        return user;
+        userEntity.setCreatedAt(LocalDateTime.now().toInstant(ZoneOffset.UTC));
+        return userEntity;
     }
 }

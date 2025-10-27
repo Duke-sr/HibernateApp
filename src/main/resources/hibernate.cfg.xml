@@ -11,6 +11,6 @@
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
 
-        <mapping class="com.duke.hibernate.entity.User"/>
+        <mapping class="com.duke.hibernate.entity.UserEntity"/>
     </session-factory>
 </hibernate-configuration>

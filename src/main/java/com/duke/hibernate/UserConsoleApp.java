@@ -1,6 +1,7 @@
 package com.duke.hibernate;
 
 import com.duke.hibernate.entity.UserEntity;
+import com.duke.hibernate.service.UserService;
 import com.duke.hibernate.service.UserServiceImpl;
 import com.duke.hibernate.util.HibernateSessionFactoryUtil;
 
@@ -10,18 +11,18 @@ import java.time.LocalDateTime;
 
 public class UserConsoleApp {
     private static final Scanner scanner = new Scanner(System.in);
-    private static final UserServiceImpl USER_SERVICE_IMPL = new UserServiceImpl();
+    private static final UserService UserServiceImpl = new UserServiceImpl();
 
     static void main() {
         System.out.println("Консольное приложение");
 
         while (true) {
             printMenu();
-            String choice = scanner.nextLine().trim();
+            var choice = scanner.nextLine().trim();
 
             switch (choice) {
                 case "1" -> createUser();
-                case "2" -> getUsers();
+                case "2" -> getUser();
                 case "3" -> updateUser();
                 case "4" -> deleteUser();
                 case "0" -> {
@@ -44,15 +45,15 @@ public class UserConsoleApp {
     }
 
     private static void createUser() {
-        UserEntity userEntity = readUserInput(null);
-        USER_SERVICE_IMPL.createUser(userEntity);
+        var userEntity = readUserInput(null);
+        UserServiceImpl.createUser(userEntity);
         System.out.println("Пользователь добавлен: " + userEntity);
     }
 
-    private static void getUsers() {
+    private static void getUser() {
         System.out.print("Введите ID пользователя для получения: ");
-        Long id = Long.parseLong(scanner.nextLine());
-        UserEntity existing = USER_SERVICE_IMPL.getUser(id);
+        var id = Long.parseLong(scanner.nextLine());
+        var existing = UserServiceImpl.getUser(id);
         if (existing == null) {
             System.out.println("Пользователь с ID " + id + " не найден.");
         } else {
@@ -66,22 +67,22 @@ public class UserConsoleApp {
 
     private static void updateUser() {
         System.out.print("Введите ID пользователя для обновления: ");
-        Long id = Long.parseLong(scanner.nextLine());
-        UserEntity existing = USER_SERVICE_IMPL.getUser(id);
+        var id = Long.parseLong(scanner.nextLine());
+        var existing = UserServiceImpl.getUser(id);
         if (existing == null) {
             System.out.println("Пользователь с ID " + id + " не найден.");
             return;
         }
 
-        UserEntity updated = readUserInput(existing);
-        USER_SERVICE_IMPL.updateUser(updated);
+        var updated = readUserInput(existing);
+        UserServiceImpl.updateUser(updated);
         System.out.println("Пользователь обновлен: " + updated);
     }
 
     private static void deleteUser() {
         System.out.print("Введите ID пользователя для удаления: ");
-        Long id = Long.parseLong(scanner.nextLine());
-        USER_SERVICE_IMPL.deleteUser(id);
+        var id = Long.parseLong(scanner.nextLine());
+        UserServiceImpl.deleteUser(id);
         System.out.println("Пользователь c ID " + id + " удалён");
     }
 

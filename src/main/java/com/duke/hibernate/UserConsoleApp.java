@@ -1,5 +1,6 @@
 package com.duke.hibernate;
 
+import com.duke.hibernate.dao.UserDaoImpl;
 import com.duke.hibernate.entity.UserEntity;
 import com.duke.hibernate.service.UserService;
 import com.duke.hibernate.service.UserServiceImpl;
@@ -11,7 +12,8 @@ import java.time.LocalDateTime;
 
 public class UserConsoleApp {
     private static final Scanner scanner = new Scanner(System.in);
-    private static final UserService UserServiceImpl = new UserServiceImpl();
+    private static final UserDaoImpl userDao = new UserDaoImpl();
+    private static final UserService UserServiceImpl = new UserServiceImpl(userDao);
 
     static void main() {
         System.out.println("Консольное приложение");

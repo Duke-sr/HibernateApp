@@ -4,7 +4,11 @@ import com.duke.hibernate.dao.UserDaoImpl;
 import com.duke.hibernate.entity.UserEntity;
 
 public class UserServiceImpl implements UserService {
-    private final UserDaoImpl usersDao = new UserDaoImpl();
+    private final UserDaoImpl usersDao;
+
+    public UserServiceImpl(UserDaoImpl usersDao) {
+        this.usersDao = usersDao;
+    }
 
     @Override
     public void createUser(UserEntity userEntity) {

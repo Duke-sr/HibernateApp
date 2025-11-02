@@ -19,8 +19,22 @@ dependencies {
     runtimeOnly("ch.qos.logback:logback-classic:1.5.20")
 
     annotationProcessor("org.projectlombok:lombok:1.18.42")
+
+    testImplementation("org.junit.jupiter:junit-jupiter:6.0.0")
+    testImplementation("org.mockito:mockito-core:5.20.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.20.0")
+    testImplementation("org.junit.platform:junit-platform-launcher:6.0.0")
+    testImplementation("net.bytebuddy:byte-buddy-agent:1.17.8")
+
+    testImplementation("org.testcontainers:postgresql:1.21.3")
+    testImplementation("org.testcontainers:junit-jupiter:1.21.3")
 }
 
 tasks.test {
     useJUnitPlatform()
+    val agent = configurations.testRuntimeClasspath.get()
+        .filter { it.name.contains("byte-buddy-agent") }
+        .singleFile
+
+    jvmArgs("-javaagent:$agent")
 }

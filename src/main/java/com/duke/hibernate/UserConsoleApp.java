@@ -92,17 +92,15 @@ public class UserConsoleApp {
         if (userEntity == null) {
             userEntity = new UserEntity();
         }
-
-        System.out.print("Введите имя: ");
-        userEntity.setName(scanner.nextLine());
-
-        System.out.print("Введите email: ");
-        userEntity.setEmail(scanner.nextLine());
-
-        System.out.print("Введите возраст: ");
-        userEntity.setAge(Long.parseLong(scanner.nextLine()));
-
-        userEntity.setCreatedAt(LocalDateTime.now().toInstant(ZoneOffset.UTC));
+        var id = userEntity.getId();
+        System.out.println("Введите имя, email и возраст: ");
+        userEntity = UserEntity.builder()
+                .id(id)
+                .name(scanner.nextLine())
+                .email(scanner.nextLine())
+                .age(Long.parseLong(scanner.nextLine()))
+                .createdAt(LocalDateTime.now().toInstant(ZoneOffset.UTC))
+                .build();
         return userEntity;
     }
 }

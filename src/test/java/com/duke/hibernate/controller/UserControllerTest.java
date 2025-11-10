@@ -35,12 +35,12 @@ class UserControllerTest {
      */
     @Test
     void shouldCreateUserAndReturn201() throws Exception {
-        UserRequestDto requestDto = new UserRequestDto();
+        var requestDto = new UserRequestDto();
         requestDto.setName("Игорь");
         requestDto.setEmail("@gmail.com");
         requestDto.setAge(43L);
 
-        UserResponseDto responseDto = new UserResponseDto();
+        var responseDto = new UserResponseDto();
         responseDto.setId(1L);
         responseDto.setName("Игорь");
         responseDto.setEmail("@gmail.com");
@@ -65,7 +65,7 @@ class UserControllerTest {
      */
     @Test
     void shouldGetUserAndReturn200() throws Exception {
-        UserResponseDto responseDto = new UserResponseDto();
+        var responseDto = new UserResponseDto();
         responseDto.setId(2L);
         responseDto.setName("Аня");
         responseDto.setEmail("@mail.com");

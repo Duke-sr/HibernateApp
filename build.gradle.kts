@@ -1,40 +1,42 @@
 plugins {
     id("java")
+    id("org.springframework.boot") version "3.5.7"
+    id("io.spring.dependency-management") version "1.1.7"
 }
 
 group = "org.duke"
 version = "1.0-SNAPSHOT"
+java.sourceCompatibility = JavaVersion.VERSION_25
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("org.hibernate.orm:hibernate-core:7.1.4.Final")
-    implementation("org.slf4j:slf4j-api:2.0.17")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.mapstruct:mapstruct:1.6.3")
 
-    compileOnly("org.projectlombok:lombok:1.18.42")
+    compileOnly("org.projectlombok:lombok")
 
-    runtimeOnly("org.postgresql:postgresql:42.7.8")
-    runtimeOnly("ch.qos.logback:logback-classic:1.5.20")
+    runtimeOnly("org.postgresql:postgresql")
 
-    annotationProcessor("org.projectlombok:lombok:1.18.42")
+    annotationProcessor("org.projectlombok:lombok")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
+    annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 
-    testImplementation("org.junit.jupiter:junit-jupiter:6.0.0")
-    testImplementation("org.mockito:mockito-core:5.20.0")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.20.0")
-    testImplementation("org.junit.platform:junit-platform-launcher:6.0.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
     testImplementation("net.bytebuddy:byte-buddy-agent:1.17.8")
-
-    testImplementation("org.testcontainers:postgresql:1.21.3")
-    testImplementation("org.testcontainers:junit-jupiter:1.21.3")
 }
 
 tasks.test {
     useJUnitPlatform()
-    val agent = configurations.testRuntimeClasspath.get()
-        .filter { it.name.contains("byte-buddy-agent") }
-        .singleFile
 
-    jvmArgs("-javaagent:$agent")
+    val agentJar = configurations.testRuntimeClasspath.get()
+        .filter { it.name.contains("byte-buddy-agent") }
+        .singleOrNull()
+        ?: throw GradleException("byte-buddy-agent not found in test classpath")
+
+    jvmArgs("-javaagent:$agentJar")
 }

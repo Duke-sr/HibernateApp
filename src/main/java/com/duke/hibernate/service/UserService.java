@@ -1,13 +1,15 @@
 package com.duke.hibernate.service;
 
-import com.duke.hibernate.entity.UserEntity;
+
+import com.duke.hibernate.dto.UserRequestDto;
+import com.duke.hibernate.dto.UserResponseDto;
 
 public interface UserService {
-    void createUser(UserEntity userEntity);
+    UserResponseDto createUser(UserRequestDto dto);
 
-    UserEntity getUser(Long id);
+    UserResponseDto getUser(Long id);
 
-    void updateUser(UserEntity userEntity);
+    UserResponseDto updateUser(Long id, UserRequestDto dto);
 
     void deleteUser(Long id);
 }

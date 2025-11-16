@@ -12,5 +12,5 @@ import lombok.*;
 public class KafkaDto {
     private Long userId;
     private String email;
-    private EventType eventType;
+    private OperationType operationType;
 }

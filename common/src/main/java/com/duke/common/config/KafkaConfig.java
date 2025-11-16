@@ -24,7 +24,7 @@ public class KafkaConfig {
 
     @Bean
     @ConditionalOnMissingBean(ProducerFactory.class)
-    public ProducerFactory<String, Object> producerFactory() {
+    public ProducerFactory<String, KafkaDto> producerFactory() {
         var producer = new HashMap<String, Object>();
         producer.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         producer.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -34,7 +34,7 @@ public class KafkaConfig {
 
     @Bean
     @ConditionalOnMissingBean(KafkaTemplate.class)
-    public KafkaTemplate<String, Object> kafkaTemplate(ProducerFactory<String, Object> factory) {
+    public KafkaTemplate<String, KafkaDto> kafkaTemplate(ProducerFactory<String, KafkaDto> factory) {
         return new KafkaTemplate<>(factory);
     }
 

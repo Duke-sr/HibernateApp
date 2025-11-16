@@ -23,21 +23,18 @@ public class NotificationServiceImpl implements NotificationService {
      */
     private final JavaMailSender mailSender;
 
-    public void process(KafkaDto event) {
-        if (event == null || event.getEventType() == null) {
-            log.warn("Получено некорректное сообщение: {}", event);
-            return;
-        }
+    public void process(KafkaDto operation) {
 
-        switch (event.getEventType()) {
+        switch (operation.getOperationType()) {
             case CREATED -> sendEmail(
-                    event.getEmail(),
+                    operation.getEmail(),
                     "Type Create",
                     "Здравствуйте! Ваш аккаунт на сайте был успешно создан.");
             case DELETED -> sendEmail(
-                    event.getEmail(),
+                    operation.getEmail(),
                     "Type Delete",
                     "Здравствуйте! Ваш аккаунт был удалён.");
+            default -> log.warn("Получен некорректный тип запроса: {}", operation.getOperationType());
         }
     }
 

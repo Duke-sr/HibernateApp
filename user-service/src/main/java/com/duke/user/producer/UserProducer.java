@@ -13,7 +13,7 @@ public class UserProducer {
 
     private final KafkaTemplate<String, KafkaDto> kafkaTemplate;
 
-    public void sendUserEvent(KafkaDto message) {
+    public void sendUserOperation(KafkaDto message) {
         log.info("Отправка сообщения в Kafka: {}", message);
         kafkaTemplate.send("kafka_message", message);
     }

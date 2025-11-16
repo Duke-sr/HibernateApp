@@ -1,6 +1,6 @@
 package com.duke.user.service;
 
-import com.duke.common.dto.EventType;
+import com.duke.common.dto.OperationType;
 import com.duke.common.dto.KafkaDto;
 import com.duke.user.dto.UserRequestDto;
 import com.duke.user.dto.UserResponseDto;
@@ -23,7 +23,7 @@ import java.time.ZoneOffset;
 public class UserServiceImpl implements UserService {
     private final UserMapper mapper;
     private final UserRepository repository;
-    private final UserProducer eventProducer;
+    private final UserProducer operationProducer;
 
     @Transactional
     public UserResponseDto createUser(UserRequestDto dto) {
@@ -32,9 +32,9 @@ public class UserServiceImpl implements UserService {
         user.setCreatedAt(LocalDateTime.now().toInstant(ZoneOffset.UTC));
         var savedUser = saveUser(user);
 
-        var event = new KafkaDto(savedUser.getId(), savedUser.getEmail(), EventType.CREATED);
-        eventProducer.sendUserEvent(event);
-        log.info("Отправлено сообщение о создании пользователя {}", event);
+        var operation = new KafkaDto(savedUser.getId(), savedUser.getEmail(), OperationType.CREATED);
+        operationProducer.sendUserOperation(operation);
+        log.info("Отправлено сообщение о создании пользователя {}", operation);
 
         return mapper.toDto(savedUser);
     }
@@ -66,9 +66,9 @@ public class UserServiceImpl implements UserService {
         var user = findUserById(id);
         repository.delete(user);
 
-        var event = new KafkaDto(user.getId(), user.getEmail(), EventType.DELETED);
-        eventProducer.sendUserEvent(event);
-        log.info("Отправлено сообщение о удалении пользователя {}", event);
+        var operation = new KafkaDto(user.getId(), user.getEmail(), OperationType.DELETED);
+        operationProducer.sendUserOperation(operation);
+        log.info("Отправлено сообщение о удалении пользователя {}", operation);
     }
 
     private UserEntity saveUser(UserEntity user) {

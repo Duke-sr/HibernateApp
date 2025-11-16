@@ -1,6 +1,6 @@
 package com.duke.common.dto;
 
-public enum EventType {
+public enum OperationType {
     CREATED,
     DELETED
 }

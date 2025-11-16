@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Получение сообщения из Kafka и инициирование отправки в Service
- * Когда сообщение появляется в топике, десериализует JSON → UserEventDto и передает в service
+ * Когда сообщение появляется в топике, десериализует JSON → KafkaDto и передает в service
  */
 @Slf4j
 @Component
@@ -21,8 +21,8 @@ public class UserConsumer {
             topics = "kafka_message",
             groupId = "notification-service-group",
             containerFactory = "kafkaListenerContainerFactory")
-    public void consume(KafkaDto event) {
-        log.info("Получено сообщение из Kafka: {}", event);
-        notificationService.process(event);
+    public void consume(KafkaDto operation) {
+        log.info("Получено сообщение из Kafka: {}", operation);
+        notificationService.process(operation);
     }
 }

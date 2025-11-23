@@ -1,12 +1,15 @@
 server:
   port: 8080
+
 spring:
   application:
     name: user-service
+
   datasource:
     url: jdbc:postgresql://localhost:5432/postgresDB
     username: ${POSTGRES_USERNAME}
     password: ${POSTGRES_PASSWORD}
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -14,9 +17,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
   jackson:
     serialization:
       indent_output: true
+
   kafka:
     bootstrap-servers: localhost:9092
     producer:

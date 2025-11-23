@@ -2,21 +2,35 @@ package com.duke.user.controller;
 
 import com.duke.user.dto.UserRequestDto;
 import com.duke.user.dto.UserResponseDto;
+import com.duke.user.hateoas.UserModelAssembler;
 import com.duke.user.service.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
 class UserControllerTest {
@@ -29,10 +43,18 @@ class UserControllerTest {
     @MockitoBean
     private UserServiceImpl userService;
 
+    @MockitoBean
+    private UserModelAssembler assembler;
+
     /**
-     * Тест добавления данных пользователя
-     * Ожидаемый возврат кода 201
+     * Чтобы HATEOAS не ломал JSON-поля DTO в тестах
      */
+    @BeforeEach
+    void setup() {
+        when(assembler.toModel(any(UserResponseDto.class)))
+                .thenAnswer(invocation -> EntityModel.of(invocation.getArgument(0)));
+    }
+
     @Test
     void shouldCreateUserAndReturn201() throws Exception {
         var requestDto = new UserRequestDto();
@@ -59,10 +81,6 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.email").value("@gmail.com"));
     }
 
-    /**
-     * Тест получения данных пользователя
-     * Ожидаемый возврат кода 200
-     */
     @Test
     void shouldGetUserAndReturn200() throws Exception {
         var responseDto = new UserResponseDto();
@@ -72,7 +90,7 @@ class UserControllerTest {
         responseDto.setAge(33L);
         responseDto.setCreatedAt(LocalDateTime.now().toInstant(ZoneOffset.UTC));
 
-        when(userService.getUser(eq(2L))).thenReturn(responseDto);
+        when(userService.getUser(2L)).thenReturn(responseDto);
 
         mockMvc.perform(get("/api/users/2"))
                 .andExpect(status().isOk())
@@ -82,13 +100,9 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.age").value(33));
     }
 
-    /**
-     * Тест получения данных пользователя
-     * Ожидаемый возврат кода 404
-     */
     @Test
     void shouldGetUserAndReturn404() throws Exception {
-        when(userService.getUser(eq(500L)))
+        when(userService.getUser(500L))
                 .thenThrow(new EntityNotFoundException("Пользователь с ID = 500 не найден"));
 
         mockMvc.perform(get("/api/users/500"))
@@ -97,13 +111,9 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.message").value("Пользователь с ID = 500 не найден"));
     }
 
-    /**
-     * Тест получения данных пользователя
-     * Ожидаемый возврат кода 400
-     */
     @Test
     void shouldGetUserAndReturn400() throws Exception {
-        when(userService.getUser(eq(-1L)))
+        when(userService.getUser(-1L))
                 .thenThrow(new IllegalArgumentException("ID пользователя не может быть отрицательным"));
 
         mockMvc.perform(get("/api/users/-1"))
@@ -112,25 +122,22 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.message").value("ID пользователя не может быть отрицательным"));
     }
 
-    /**
-     * Тест обновления данных пользователя
-     * Ожидаемый возврат кода 200
-     */
     @Test
     void shouldUpdateUserAndReturn200() throws Exception {
-        UserRequestDto requestDto = new UserRequestDto();
+        var requestDto = new UserRequestDto();
         requestDto.setName("New");
         requestDto.setEmail("new@gmail.com");
         requestDto.setAge(20L);
 
-        UserResponseDto responseDto = new UserResponseDto();
+        var responseDto = new UserResponseDto();
         responseDto.setId(3L);
         responseDto.setName("New");
         responseDto.setEmail("new@gmail.com");
         responseDto.setAge(20L);
         responseDto.setCreatedAt(LocalDateTime.now().toInstant(ZoneOffset.UTC));
 
-        when(userService.updateUser(eq(3L), any(UserRequestDto.class))).thenReturn(responseDto);
+        when(userService.updateUser(eq(3L), any(UserRequestDto.class)))
+                .thenReturn(responseDto);
 
         mockMvc.perform(put("/api/users/3")
                         .contentType("application/json")
@@ -141,32 +148,22 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.age").value(20));
     }
 
-    /**
-     * Тест обновления данных пользователя
-     * Ожидаемый возврат кода 404
-     */
     @Test
     void shouldUpdateUserAndReturn404() throws Exception {
-        UserRequestDto requestDto = new UserRequestDto();
-
         when(userService.updateUser(eq(1000L), any(UserRequestDto.class)))
                 .thenThrow(new EntityNotFoundException("Пользователь с ID = 1000 не найден"));
 
         mockMvc.perform(put("/api/users/1000")
                         .contentType("application/json")
-                        .content(mapper.writeValueAsString(requestDto)))
+                        .content(mapper.writeValueAsString(new UserRequestDto())))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.message").value("Пользователь с ID = 1000 не найден"));
     }
 
-    /**
-     * Тест удаление данных пользователя
-     * Ожидаемый возврат кода 204
-     */
     @Test
     void shouldDeleteUserAndReturn204() throws Exception {
-        doNothing().when(userService).deleteUser(eq(14L));
+        doNothing().when(userService).deleteUser(14L);
 
         mockMvc.perform(delete("/api/users/14"))
                 .andExpect(status().isNoContent());
@@ -174,14 +171,10 @@ class UserControllerTest {
         verify(userService, times(1)).deleteUser(14L);
     }
 
-    /**
-     * Тест удаление данных пользователя
-     * Ожидаемый возврат кода 404
-     */
     @Test
     void shouldDeleteUserAndReturn404() throws Exception {
         doThrow(new EntityNotFoundException("Пользователь с ID = 1111 не найден"))
-                .when(userService).deleteUser(eq(1111L));
+                .when(userService).deleteUser(1111L);
 
         mockMvc.perform(delete("/api/users/1111"))
                 .andExpect(status().isNotFound())

@@ -1,11 +1,14 @@
 package com.duke.notification.controller;
 
-import com.duke.notification.service.NotificationServiceImpl;
+import com.duke.notification.dto.EmailDto;
+import com.duke.notification.service.MailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.duke.notification.dto.EmailDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -13,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class EmailController {
 
-    private final NotificationServiceImpl notificationService;
+    private final MailServiceImpl mailService;
 
     @PostMapping()
     public ResponseEntity<EmailDto> sendMail(@RequestBody EmailDto request) {
         log.info("Получен запрос на отправку письма: {}", request);
-        notificationService.sendEmail(request.email(), request.subject(), request.text());
+        mailService.sendEmail(request.email(), request.subject(), request.text());
         return ResponseEntity.ok(request);
     }
 }

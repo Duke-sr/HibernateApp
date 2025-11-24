@@ -3,20 +3,17 @@ package com.duke.notification;
 import com.duke.common.dto.KafkaDto;
 import com.duke.common.dto.OperationType;
 import com.duke.notification.consumer.UserConsumer;
-
 import org.junit.jupiter.api.Test;
-
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import org.mockito.ArgumentCaptor;
-
-import static org.mockito.Mockito.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Интеграционный тест отправки уведомлений на электронную почту.
@@ -54,6 +51,6 @@ class NotificationIntegrationTest {
 
         assertThat(sent.getTo()).containsExactly("test@google.com");
         assertThat(sent.getSubject()).isEqualTo("Type Create");
-        assertThat(sent.getText()).contains("Создано сообщение");
+        assertThat(sent.getText()).contains("Здравствуйте! Ваш аккаунт на сайте был успешно создан.");
     }
 }

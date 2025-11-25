@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(scanBasePackages = "com.duke.user")
 public class UserConsoleApp {
-    static void main(String[] args) {
+    public static void main(String[] args) {
         SpringApplication.run(UserConsoleApp.class, args);
     }
 }

@@ -6,7 +6,7 @@ plugins {
 
 group = "org.duke"
 version = "1.0-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_25
+java.sourceCompatibility = JavaVersion.VERSION_23
 
 repositories {
     mavenCentral()
@@ -18,7 +18,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.mapstruct:mapstruct:1.6.3")
     implementation("org.springframework.kafka:spring-kafka")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14")
+    implementation("org.springframework.boot:spring-boot-starter-hateoas")
 
     compileOnly("org.projectlombok:lombok")
 

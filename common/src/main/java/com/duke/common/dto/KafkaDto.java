@@ -1,12 +1,17 @@
 package com.duke.common.dto;
 
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Объект, передаваемый через Kafka между микросервисами.
  * Содержит информацию о пользователе и типе операции.
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class KafkaDto {

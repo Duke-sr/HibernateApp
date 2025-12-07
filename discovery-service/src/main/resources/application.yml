@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: discovery-service
+  config:
+    import: >
+      optional:file:/Users/s/IdeaProjects/HibernateApp/configs/discovery-service-application.yml

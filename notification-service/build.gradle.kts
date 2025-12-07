@@ -1,11 +1,16 @@
 plugins {
     id("java")
-    id("org.springframework.boot") version "3.5.7"
+    id("org.springframework.boot") version "3.2.7"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
 group = "com.duke"
 version = "1.0-SNAPSHOT"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_23
+    targetCompatibility = JavaVersion.VERSION_23
+}
 
 repositories {
     mavenCentral()
@@ -17,6 +22,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")

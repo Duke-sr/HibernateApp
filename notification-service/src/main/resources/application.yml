@@ -3,4 +3,4 @@ spring:
     name: notification-service
   config:
     import: >
-      optional:file:/Users/s/IdeaProjects/HibernateApp/configs/notification-service-application.yml
+      optional:file:/Users/s/IdeaProjects/HibernateApp/configs/application-notification-service.yml

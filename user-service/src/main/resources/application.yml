@@ -3,4 +3,4 @@ spring:
     name: user-service
   config:
     import: >
-      optional:file:/Users/s/IdeaProjects/HibernateApp/configs/user-service-application.yml
+      optional:file:/Users/s/IdeaProjects/HibernateApp/configs/application-user-service.yml

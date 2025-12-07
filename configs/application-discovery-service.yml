@@ -12,6 +12,9 @@ spring:
     name: discovery-service
 
 eureka:
+  instance:
+    prefer-ip-address: true
+    ip-address: ${HOSTNAME}
   client:
     register-with-eureka: false
     fetch-registry: false

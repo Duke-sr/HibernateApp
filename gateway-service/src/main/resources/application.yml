@@ -3,4 +3,4 @@ spring:
     name: gateway-service
   config:
     import: >
-      optional:file:/Users/s/IdeaProjects/HibernateApp/configs/gateway-service-application.yml
+      optional:file:/Users/s/IdeaProjects/HibernateApp/configs/application-gateway-service.yml

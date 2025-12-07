@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: gateway-service
+  config:
+    import: >
+      optional:file:/Users/s/IdeaProjects/HibernateApp/configs/application-gateway-service.yml

@@ -1,16 +1,115 @@
 services:
-  postgres:
-    image: postgres:18-alpine
-    container_name: db-postgres-alpine
-    restart: always
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - common-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9093:9093"
+    networks:
+      - common-network
+
+  postgres:
+    image: postgres:16
+    env_file:
+      - gmail.env
+    environment:
       POSTGRES_DB: postgresDB
+#      POSTGRES_USER: ${POSTGRES_USERNAME}
+#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
-    volumes:
-      - pg_data:/var/lib/postgresql/data
+    networks:
+      - common-network
 
-volumes:
-  pg_data:
+  discovery-service:
+    build:
+      context: ./discovery-service
+    image: discovery-service
+    environment:
+      SPRING_PROFILES_ACTIVE: discovery-service
+      SPRING_CONFIG_ADDITIONAL_LOCATION: file:/config/
+    volumes:
+      - /Users/s/IdeaProjects/HibernateApp/configs/:/config/
+    networks:
+      - common-network
+    ports:
+      - "8761:8761"
+    depends_on:
+      - kafka
+      - postgres
+
+  user-service:
+    build:
+      context: ./user-service
+    image: user-service
+    environment:
+      SPRING_PROFILES_ACTIVE: user-service
+      SPRING_CONFIG_ADDITIONAL_LOCATION: file:/config/
+    volumes:
+      - /Users/s/IdeaProjects/HibernateApp/configs/:/config/
+    networks:
+      - common-network
+    ports:
+      - "8080:8080"
+    depends_on:
+      - kafka
+      - zookeeper
+
+  notification-service:
+    build:
+      context: ./notification-service
+    image: notification-service
+    env_file:
+      - gmail.env
+    environment:
+      SPRING_PROFILES_ACTIVE: notification-service
+      SPRING_CONFIG_ADDITIONAL_LOCATION: file:/config/
+#      MAIL_USERNAME: ${MAIL_USERNAME}
+#      MAIL_PASSWORD: ${MAIL_PASSWORD}
+    volumes:
+      - /Users/s/IdeaProjects/HibernateApp/configs/:/config/
+    networks:
+      - common-network
+    ports:
+      - "8081:8081"
+    depends_on:
+      - kafka
+      - zookeeper
+      - discovery-service
+
+  gateway-service:
+    build:
+      context: ./gateway-service
+    image: gateway-service
+    environment:
+      SPRING_PROFILES_ACTIVE: gateway-service
+      SPRING_CONFIG_ADDITIONAL_LOCATION: file:/config/
+    volumes:
+      - /Users/s/IdeaProjects/HibernateApp/configs/:/config/
+    networks:
+      - common-network
+    ports:
+      - "8088:8088"
+    depends_on:
+      - user-service
+      - notification-service
+
+networks:
+  common-network:
+    driver: bridge

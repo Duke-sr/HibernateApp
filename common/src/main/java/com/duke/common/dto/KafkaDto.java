@@ -1,6 +1,5 @@
 package com.duke.common.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
